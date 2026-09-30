@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CRMIXER Mobile Device Management v0.5.4</title>
+  <link rel="stylesheet" href="/static/style.css">
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+
+  <!-- Top Navbar -->
+  <header class="navbar">
+    <div class="brand">
+      <div class="brand-icon">
+        <i data-lucide="smartphone"></i>
+      </div>
+      <div>
+        <div class="brand-title">CRMIXER</div>
+        <div class="brand-subtitle">Mobile Device Management v0.5.4</div>
+      </div>
+    </div>
+
+    <div class="nav-actions">
+      <div style="display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--text-muted);">
+        <span id="devices-online-badge" style="background: rgba(16,185,129,0.15); color: #10b981; padding: 3px 8px; border-radius: 6px; border: 1px solid rgba(16,185,129,0.3); font-weight: 600;">
+          <span id="online-count">0</span> Connected
+        </span>
+      </div>
+
+      <button id="btn-open-scrcpy-all" class="btn btn-sm btn-primary" title="Open 60 FPS Live Interactive Window">
+        <i data-lucide="external-link" style="width: 14px; height: 14px;"></i> Open 60 FPS Control
+      </button>
+
+      <button id="btn-refresh" class="btn btn-sm" title="Refresh Devices">
+        <i data-lucide="refresh-cw" style="width: 14px; height: 14px;"></i> Refresh
+      </button>
+
+      <button id="btn-wifi-modal" class="btn btn-sm" title="Wireless Connect">
+        <i data-lucide="wifi" style="width: 14px; height: 14px;"></i> Wi-Fi Connect
+      </button>
+
+      <!-- Layout Selector -->
+      <select id="grid-layout-select" class="input-control" style="width: auto; padding: 4px 8px; font-size: 11px;">
+        <option value="auto">Auto Fit</option>
+        <option value="1">1 Column</option>
+        <option value="2">2 Columns</option>
+        <option value="3">3 Columns</option>
+        <option value="4">4 Columns</option>
+      </select>
+    </div>
+  </header>
+
+  <!-- Main Workspace -->
+  <div class="main-wrapper">
+    
+    <!-- Left Sidebar -->
+    <aside class="sidebar">
+
+      <!-- DEVICE CONTROL -->
+      <div class="section-box">
+        <div class="section-title">
+          <span>Device Control</span>
+          <span id="selected-count-badge" style="color: var(--primary); font-size: 10px;">0 selected</span>
+        </div>
+        <div class="btn-group">
+          <button id="btn-select-all" class="btn btn-sm">Select all</button>
+          <button id="btn-clear-selection" class="btn btn-sm">Clear</button>
+        </div>
+        <div style="font-size: 10px; color: var(--text-dim); margin-top: 6px;">
+          Selected devices receive actions below
+        </div>
+      </div>
+
+      <!-- MASTER-SLAVE SYNC -->
+      <div class="section-box">
+        <div class="section-title">
+          <span>Master Sync Mode</span>
+          <i data-lucide="layers" style="width: 13px; height: 13px; color: #f59e0b;"></i>
+        </div>
+        <div class="sync-switch-box">
+          <span style="font-size: 11px; color: var(--text-muted);">Sync Master Touches</span>
+          <label class="switch">
+            <input type="checkbox" id="master-sync-toggle">
+            <span class="slider"></span>
+          </label>
+        </div>
+        <div style="font-size: 10px; color: var(--text-dim); margin-top: 4px;">
+          Click <i data-lucide="crown" style="width: 10px; height: 10px; display: inline;"></i> on any card to set Master
+        </div>
+      </div>
+
+      <!-- NAVIGATION -->
+      <div class="section-box">
+        <div class="section-title">
+          <span>Navigation</span>
+        </div>
+        <div class="btn-group-3" style="margin-bottom: 6px;">
+          <button class="btn btn-nav" data-nav="home" title="Home">
+            <i data-lucide="home" style="width: 14px; height: 14px;"></i> Home
+          </button>
+          <button class="btn btn-nav" data-nav="back" title="Back">
+            <i data-lucide="chevron-left" style="width: 14px; height: 14px;"></i> Back
+          </button>
+          <button class="btn btn-nav" data-nav="recent" title="Recent Apps">
+            <i data-lucide="square" style="width: 14px; height: 14px;"></i> Recent
+          </button>
+        </div>
+        <div class="btn-group-4">
+          <button class="btn btn-nav btn-sm" data-nav="power" title="Screen Power">
+            <i data-lucide="power" style="width: 12px; height: 12px;"></i>
+          </button>
+          <button class="btn btn-nav btn-sm" data-nav="wake" title="Wake Up">
+            <i data-lucide="sun" style="width: 12px; height: 12px;"></i>
+          </button>
+          <button class="btn btn-nav btn-sm" data-nav="vol_up" title="Volume +">
+            <i data-lucide="volume-2" style="width: 12px; height: 12px;"></i>
+          </button>
+          <button class="btn btn-nav btn-sm" data-nav="vol_down" title="Volume -">
+            <i data-lucide="volume-1" style="width: 12px; height: 12px;"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- BROADCAST TEXT -->
+      <div class="section-box">
+        <div class="section-title">
+          <span>Broadcast Text</span>
+          <i data-lucide="type" style="width: 13px; height: 13px; color: var(--primary);"></i>
+        </div>
+        <textarea id="broadcast-text-input" class="input-control" placeholder="พิมพ์ข้อความ / ใส่ Emoji หรือ URL..." rows="2"></textarea>
+        <button id="btn-broadcast-text" class="btn btn-primary btn-sm" style="width: 100%; margin-top: 8px;">
+          <i data-lucide="send" style="width: 12px; height: 12px;"></i> Send to selected
+        </button>
+      </div>
+
+      <!-- TAP (device point) -->
+      <div class="section-box">
+        <div class="section-title">
+          <span>Tap (device point)</span>
+          <i data-lucide="mouse-pointer" style="width: 13px; height: 13px;"></i>
+        </div>
+        <div class="input-row">
+          <div class="input-col">
+            <span class="input-label">X Coordinate</span>
+            <input type="number" id="tap-x" class="input-control" placeholder="360" value="360">
+          </div>
+          <div class="input-col">
+            <span class="input-label">Y Coordinate</span>
+            <input type="number" id="tap-y" class="input-control" placeholder="640" value="640">
+          </div>
+        </div>
+        <button id="btn-broadcast-tap" class="btn btn-sm" style="width: 100%;">
+          Broadcast tap
+        </button>
+      </div>
+
+      <!-- SWIPE -->
+      <div class="section-box">
+        <div class="section-title">
+          <span>Swipe / Gesture</span>
+          <i data-lucide="move" style="width: 13px; height: 13px;"></i>
+        </div>
+        <div class="input-row">
+          <div class="input-col">
+            <span class="input-label">Start X</span>
+            <input type="number" id="swipe-x1" class="input-control" value="360">
+          </div>
+          <div class="input-col">
+            <span class="input-label">Start Y</span>
+            <input type="number" id="swipe-y1" class="input-control" value="900">
+          </div>
+        </div>
+        <div class="input-row">
+          <div class="input-col">
+            <span class="input-label">End X</span>
+            <input type="number" id="swipe-x2" class="input-control" value="360">
+          </div>
+          <div class="input-col">
+            <span class="input-label">End Y</span>
+            <input type="number" id="swipe-y2" class="input-control" value="300">
+          </div>
+        </div>
+        <div class="input-row">
+          <div class="input-col">
+            <span class="input-label">Duration (ms)</span>
+            <input type="number" id="swipe-dur" class="input-control" value="300">
+          </div>
+        </div>
+        <button id="btn-broadcast-swipe" class="btn btn-sm" style="width: 100%; margin-bottom: 6px;">
+          Broadcast swipe
+        </button>
+        <!-- Quick swipe presets -->
+        <div class="btn-group-4">
+          <button class="btn btn-sm btn-preset-swipe" data-preset="up" title="Swipe Up (Next Video)">▲ Up</button>
+          <button class="btn btn-sm btn-preset-swipe" data-preset="down" title="Swipe Down">▼ Down</button>
+          <button class="btn btn-sm btn-preset-swipe" data-preset="left" title="Swipe Left">◄ Left</button>
+          <button class="btn btn-sm btn-preset-swipe" data-preset="right" title="Swipe Right">► Right</button>
+        </div>
+      </div>
+
+      <!-- AUTOMATION (TIKTOK / REELS AUTO-SCROLLER) -->
+      <div class="section-box">
+        <div class="section-title">
+          <span>TikTok / Reels Bot</span>
+          <i data-lucide="bot" style="width: 13px; height: 13px; color: #10b981;"></i>
+        </div>
+        <div class="input-row">
+          <div class="input-col">
+            <span class="input-label">Min Delay (s)</span>
+            <input type="number" id="auto-min-delay" class="input-control" value="4">
+          </div>
+          <div class="input-col">
+            <span class="input-label">Max Delay (s)</span>
+            <input type="number" id="auto-max-delay" class="input-control" value="10">
+          </div>
+        </div>
+        <div style="margin-bottom: 8px;">
+          <span class="input-label">Auto Double-Tap Like Probability: <span id="like-prob-text">20%</span></span>
+          <input type="range" id="auto-like-prob" min="0" max="100" value="20" style="width: 100%; accent-color: var(--primary);">
+        </div>
+        <div class="btn-group">
+          <button id="btn-start-auto" class="btn btn-success btn-sm">
+            <i data-lucide="play" style="width: 12px; height: 12px;"></i> Start Bot
+          </button>
+          <button id="btn-stop-auto" class="btn btn-danger btn-sm">
+            <i data-lucide="square" style="width: 12px; height: 12px;"></i> Stop
+          </button>
+        </div>
+        <div id="bot-status-text" style="font-size: 10px; color: var(--text-dim); margin-top: 6px; font-family: 'JetBrains Mono', monospace;">
+          Status: Ready
+        </div>
+      </div>
+
+    </aside>
+
+    <!-- Content Workspace -->
+    <main class="content-area">
+      <!-- Device Grid Canvas -->
+      <div id="devices-container" class="devices-grid grid-auto">
+        <!-- Devices rendered via JavaScript -->
+      </div>
+
+      <!-- Empty State View -->
+      <div id="empty-state-view" class="empty-state">
+        <div class="empty-icon">
+          <i data-lucide="smartphone-charging"></i>
+        </div>
+        <h2 class="empty-title">No Android Devices Connected</h2>
+        <p class="empty-desc">
+          Connect your Android phone via USB cable or Wi-Fi to start controlling and mirroring screens in real-time.
+        </p>
+        <div class="empty-steps">
+          <strong>Quick Setup Steps:</strong><br>
+          1. Go to <em>Settings → Developer options</em> on your phone.<br>
+          2. Enable <strong>USB debugging</strong> (and <em>USB debugging (Security settings)</em> if available).<br>
+          3. Plug your phone into PC via USB cable.<br>
+          4. When prompted on phone, tap <strong>"Always allow from this computer"</strong>.<br>
+          5. Click the <strong>Refresh</strong> button at the top!
+        </div>
+      </div>
+    </main>
+
+  </div>
+
+  <!-- Wi-Fi Connect Modal -->
+  <div id="wifi-modal" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 100; align-items: center; justify-content: center;">
+    <div style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 12px; width: 380px; padding: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+        <h3 style="font-size: 15px; font-weight: 700; color: #fff; display: flex; align-items: center; gap: 8px;">
+          <i data-lucide="wifi" style="width: 16px; height: 16px; color: var(--primary);"></i> Connect Device via Wi-Fi
+        </h3>
+        <button id="btn-close-wifi-modal" class="icon-btn">
+          <i data-lucide="x" style="width: 16px; height: 16px;"></i>
+        </button>
+      </div>
+      <div style="margin-bottom: 14px;">
+        <span class="input-label">Device IP and Port (e.g. 192.168.1.105:5555)</span>
+        <input type="text" id="wifi-ip-input" class="input-control" placeholder="192.168.1.100:5555">
+      </div>
+      <div style="display: flex; gap: 8px;">
+        <button id="btn-submit-wifi-connect" class="btn btn-primary btn-sm" style="flex: 1;">Connect</button>
+        <button id="btn-submit-wifi-disconnect" class="btn btn-danger btn-sm" style="flex: 1;">Disconnect</button>
+      </div>
+      <div style="font-size: 11px; color: var(--text-dim); margin-top: 12px; line-height: 1.5;">
+        💡 Tip: If connecting for the first time, plug in USB once, enable TCP/IP, then you can unplug and use wirelessly!
+      </div>
+    </div>
+  </div>
+
+  <!-- App Scripts -->
+  <script src="/static/app.js"></script>
+</body>
+</html>

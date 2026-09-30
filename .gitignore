@@ -1,0 +1,27 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyc
+
+# Virtual Environment
+venv/
+env/
+ENV/
+.venv/
+
+# IDE / Editor configs
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# User-specific device configs & local test scratch
+device_config.json
+scratch/
+temp/
+*.log
+
+# Binaries (will be downloaded automatically via setup_binaries.py or run.bat)
+bin/
+*.zip
